@@ -104,6 +104,10 @@
 .ui-datepicker .ui-datepicker-buttonpane button.ui-datepicker-current {
 	float: left;
 }
+.ui-datepicker .ui-datepicker-lunar {
+	font-size: 0.6em;
+	padding: 0;
+}
 
 /* with multiple calendars */
 .ui-datepicker.ui-datepicker-multi {

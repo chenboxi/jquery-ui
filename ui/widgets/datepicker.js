@@ -149,7 +149,8 @@ function Datepicker() {
 		constrainInput: true, // The input is constrained by the current date format
 		showButtonPanel: false, // True to show button panel, false to not show it
 		autoSize: false, // True to size the input for the date format, false to leave as is
-		disabled: false // The initial disabled state
+		disabled: false, // The initial disabled state
+		showLunar: false // True to show lunar calendar, false to not show it
 	};
 	$.extend( this._defaults, this.regional[ "" ] );
 	this.regional.en = $.extend( true, {}, this.regional[ "" ] );
@@ -1037,7 +1038,7 @@ $.extend( Datepicker.prototype, {
 		}
 
 		inst = this._getInst( target[ 0 ] );
-		inst.selectedDay = inst.currentDay = $( "a", td ).html();
+		inst.selectedDay = inst.currentDay = $( "a span:first-child", td ).html();
 		inst.selectedMonth = inst.currentMonth = month;
 		inst.selectedYear = inst.currentYear = year;
 		this._selectDate( id, this._formatDate( inst,
@@ -1671,6 +1672,7 @@ $.extend( Datepicker.prototype, {
 			navigationAsDateFormat = this._get( inst, "navigationAsDateFormat" ),
 			numMonths = this._getNumberOfMonths( inst ),
 			showCurrentAtPos = this._get( inst, "showCurrentAtPos" ),
+			showLunar = this._get( inst, "showLunar"),
 			stepMonths = this._get( inst, "stepMonths" ),
 			isMultiMonth = ( numMonths[ 0 ] !== 1 || numMonths[ 1 ] !== 1 ),
 			currentDate = this._daylightSavingAdjust( ( !inst.currentDay ? new Date( 9999, 9, 9 ) :
@@ -1816,8 +1818,9 @@ $.extend( Datepicker.prototype, {
 							( unselectable ? "<span class='ui-state-default'>" + printDate.getDate() + "</span>" : "<a class='ui-state-default" +
 							( printDate.getTime() === today.getTime() ? " ui-state-highlight" : "" ) +
 							( printDate.getTime() === currentDate.getTime() ? " ui-state-active" : "" ) + // highlight selected day
-							( otherMonth ? " ui-priority-secondary" : "" ) + // distinguish dates from other months
-							"' href='#'>" + printDate.getDate() + "</a>" ) ) + "</td>"; // display selectable date
+							( otherMonth ? " ui-priority-secondary" : "" ) + "' href='#'><span>" + // distinguish dates from other months
+							printDate.getDate() + "</span>" +
+							( showLunar ? "<span class='ui-datepicker-lunar'>" + this._convertToLunar(printDate) + "</span>" : "") + "</a>" ) ) + "</td>"; // display selectable date
 						printDate.setDate( printDate.getDate() + 1 );
 						printDate = this._daylightSavingAdjust( printDate );
 					}
@@ -2025,6 +2028,147 @@ $.extend( Datepicker.prototype, {
 			this._daylightSavingAdjust( new Date( year, month, day ) ) ) :
 			this._daylightSavingAdjust( new Date( inst.currentYear, inst.currentMonth, inst.currentDay ) ) );
 		return this.formatDate( this._get( inst, "dateFormat" ), date, this._getFormatConfig( inst ) );
+	},
+
+	/* Convert date to lunar */
+	_convertToLunar: function(dt) {
+		var MinDay = new Date("1900-1-30");
+		var MaxDay = new Date("2049-12-31");
+		var nStr1 = "日一二三四五六七八九十";
+		var nStr2 = "初十廿卅";
+		var monthArr = ["正月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "腊月"];
+		var ftv1 = {
+			"1-1": "春节",
+			"1-15": "元宵节",
+			"5-5": "端午节",
+			"8-15": "中秋节",
+			"12-8": "腊八节"
+		};
+
+		/**
+		 *  来源于网上农历数据
+		 *  数据结构如下，共使用17位数据
+		 *  第17位：表示闰月天数，0表示29天，1表示30天
+		 *  第16位-第5位（共12位）表示12个月，其中第16位表示第一月，1代表该月有30天，0代表该月有29天
+		 *  第4位-第1位（共四位）表示闰月是哪个月，0表示没有闰月
+		 * */
+		var lunarArr = [
+			0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,
+			0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,
+			0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,
+			0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,
+			0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,
+			0x06ca0,0x0b550,0x15355,0x04da0,0x0a5d0,0x14573,0x052d0,0x0a9a8,0x0e950,0x06aa0,
+			0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,
+			0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b5a0,0x195a6,
+			0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,
+			0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x055c0,0x0ab60,0x096d5,0x092e0,
+			0x0c960,0x0d954,0x0d4a0,0x0da50,0x07552,0x056a0,0x0abb7,0x025d0,0x092d0,0x0cab5,
+			0x0a950,0x0b4a0,0x0baa4,0x0ad50,0x055d9,0x04ba0,0x0a5b0,0x15176,0x052b0,0x0a930,
+			0x07954,0x06aa0,0x0ad50,0x05b52,0x04b60,0x0a6e6,0x0a4e0,0x0d260,0x0ea65,0x0d530,
+			0x05aa0,0x076a3,0x096d0,0x04bd7,0x04ad0,0x0a4d0,0x1d0b6,0x0d250,0x0d520,0x0dd45,
+			0x0b5a0,0x056d0,0x055b2,0x049b0,0x0a577,0x0a4b0,0x0aa50,0x1b255,0x06d20,0x0ada0
+		];
+
+		/**农历每年的天数,程序计算所得 */
+		var lunarDays = [
+			384,354,355,383,354,355,384,354,355,384,354,384,354,354,384,354,355,384,355,384,
+			354,354,384,354,354,385,354,355,384,354,383,354,355,384,355,354,384,354,384,354,
+			354,384,355,354,385,354,354,384,354,384,354,355,384,354,355,384,354,383,355,354,
+			384,355,354,384,355,353,384,355,384,354,355,384,354,354,384,354,384,354,355,384,
+			355,354,384,354,384,354,354,384,355,355,384,354,354,383,355,384,354,355,384,354,
+			354,384,354,355,384,354,385,354,354,384,354,354,384,355,384,354,355,384,354,354,
+			384,354,355,384,354,384,354,354,384,355,354,384,355,384,354,354,384,354,354,384,
+			355,355,384,354,384,354,354,384,354,355
+		];
+
+		if (dt < MinDay || dt > MaxDay) {
+			return null;
+		}
+
+		var offset = (dt - MinDay)/1000/60/60/24; //计算与1900年的天数差
+		var _index = 0;
+		for (var i = 0; i < lunarDays.length; i++) {
+			if (offset - lunarDays[i] < 1) {
+				_index = i;
+				break;
+			} else {
+				offset -= lunarDays[i];
+			}
+		}
+
+		var _cYear = lunarArr[_index];
+		var _cMonth = 0;
+		var _cDay = 0;
+		var leap = _cYear & 0xf; //计算该年闰哪个月
+		var temp = 0;
+		var monthDays = this._getMonthDays(_cYear);
+		var _cIsLeapMonth = false; //判断当月是否为闰月
+		for (var j = 1; j <= 12; j++) {
+			//闰月
+			if ((leap > 0) && (j === leap + 1)) {
+				_cIsLeapMonth = true;
+				j--;
+				temp = monthDays[12];
+			} else {
+				_cIsLeapMonth = false;
+				temp = monthDays[j-1];
+			}
+			offset -= temp;
+			if (offset <= 0) {
+				_cMonth = j;
+				_cDay = Math.floor(offset + temp);
+				break;
+			}
+		}
+
+		var lunarMD = "";
+		switch(_cDay) {
+			case 1: lunarMD = monthArr[_cMonth - 1]; break;
+			case 10: lunarMD = "初十"; break;
+			case 20: lunarMD = "廿"; break;
+			case 30: lunarMD = "卅"; break;
+			default: lunarMD = nStr2.charAt(Math.floor(_cDay / 10)) + nStr1.charAt(_cDay % 10);
+		}
+
+		//农历节日
+		if (!_cIsLeapMonth) {
+			if (ftv1[_cMonth + "-" + _cDay]) {
+				lunarMD = ftv1[_cMonth + "-" + _cDay];
+			}
+			if (_cMonth === 12 && _cDay === monthDays[11]) {
+				lunarMD = "除夕";
+			}
+		}
+
+		return lunarMD;
+	},
+
+    /**计算某农历年每个月的天数, 闰月天数放在数组最后一位 */
+	_getMonthDays: function(year) {
+		var arr = [];
+		var info = year & 0x0ffff;
+		var i = 0x8000;
+		for (var m = 0; m < 12; m++) {
+			var f = info & i;
+			if (f !== 0) {
+				arr.push(30);
+			} else {
+				arr.push(29);
+			}
+			i = i >> 1;
+		}
+
+		//判断最后四位，若为0则没有闰月
+		if (year & 0xf !== 0) {
+			//判断前四位，闰月天数
+			if ((year & 0x10000) !== 0) {
+				arr.push(30);
+			} else {
+				arr.push(29);
+			}
+		}
+		return arr;
 	}
 } );
 
