@@ -1815,7 +1815,8 @@ $.extend( Datepicker.prototype, {
 							( ( !otherMonth || showOtherMonths ) && daySettings[ 2 ] ? " title='" + daySettings[ 2 ].replace( /'/g, "&#39;" ) + "'" : "" ) + // cell title
 							( unselectable ? "" : " data-handler='selectDay' data-event='click' data-month='" + printDate.getMonth() + "' data-year='" + printDate.getFullYear() + "'" ) + ">" + // actions
 							( otherMonth && !showOtherMonths ? "&#xa0;" : // display for other months
-							( unselectable ? "<span class='ui-state-default'>" + printDate.getDate() + "</span>" : "<a class='ui-state-default" +
+							( unselectable ? "<span class='ui-state-default'>" + printDate.getDate() + "</span>" +
+							( showLunar ? "<span class='ui-datepicker-lunar'>" + this._convertToLunar(printDate) + "</span>" : "" ) : "<a class='ui-state-default" +
 							( printDate.getTime() === today.getTime() ? " ui-state-highlight" : "" ) +
 							( printDate.getTime() === currentDate.getTime() ? " ui-state-active" : "" ) + // highlight selected day
 							( otherMonth ? " ui-priority-secondary" : "" ) + "' href='#'><span>" + // distinguish dates from other months
@@ -2160,7 +2161,7 @@ $.extend( Datepicker.prototype, {
 		}
 
 		//判断最后四位，若为0则没有闰月
-		if (year & 0xf !== 0) {
+		if ((year & 0xf) !== 0) {
 			//判断前四位，闰月天数
 			if ((year & 0x10000) !== 0) {
 				arr.push(30);
