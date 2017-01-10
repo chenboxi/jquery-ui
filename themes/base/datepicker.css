@@ -104,23 +104,15 @@
 .ui-datepicker .ui-datepicker-buttonpane button.ui-datepicker-current {
 	float: left;
 }
-.ui-datepicker-unselectable.ui-state-disabled span{
-	border: 1px solid #c5c5c5;
-	background: #ededed;
-}
-.ui-datepicker-unselectable.ui-state-disabled .ui-state-default {
-	border-bottom: 0;
-	padding: 0.3em 0.2em;
-}
-.ui-datepicker-unselectable.ui-state-disabled .ui-datepicker-lunar{
-	border-top: none;
-	padding: 0 0.2em 0.2em;
-}
-.ui-datepicker .ui-datepicker-lunar {
+.ui-datepicker-unselectable.ui-state-disabled span:nth-child(2){
 	font-size: 0.6em;
 	padding: 0;
 }
 
+.ui-state-default.ui-datepicker-lunar span:nth-child(2) {
+	font-size: 0.6em;
+	padding: 0;
+}
 /* with multiple calendars */
 .ui-datepicker.ui-datepicker-multi {
 	width: auto;

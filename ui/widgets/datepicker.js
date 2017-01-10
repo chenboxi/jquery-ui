@@ -1672,7 +1672,7 @@ $.extend( Datepicker.prototype, {
 			navigationAsDateFormat = this._get( inst, "navigationAsDateFormat" ),
 			numMonths = this._getNumberOfMonths( inst ),
 			showCurrentAtPos = this._get( inst, "showCurrentAtPos" ),
-			showLunar = this._get( inst, "showLunar"),
+			showLunar = this._get( inst, "showLunar" ),
 			stepMonths = this._get( inst, "stepMonths" ),
 			isMultiMonth = ( numMonths[ 0 ] !== 1 || numMonths[ 1 ] !== 1 ),
 			currentDate = this._daylightSavingAdjust( ( !inst.currentDay ? new Date( 9999, 9, 9 ) :
@@ -1815,13 +1815,14 @@ $.extend( Datepicker.prototype, {
 							( ( !otherMonth || showOtherMonths ) && daySettings[ 2 ] ? " title='" + daySettings[ 2 ].replace( /'/g, "&#39;" ) + "'" : "" ) + // cell title
 							( unselectable ? "" : " data-handler='selectDay' data-event='click' data-month='" + printDate.getMonth() + "' data-year='" + printDate.getFullYear() + "'" ) + ">" + // actions
 							( otherMonth && !showOtherMonths ? "&#xa0;" : // display for other months
-							( unselectable ? "<span class='ui-state-default'>" + printDate.getDate() + "</span>" +
-							( showLunar ? "<span class='ui-datepicker-lunar'>" + this._convertToLunar(printDate) + "</span>" : "" ) : "<a class='ui-state-default" +
+							( unselectable ? "<span>" + printDate.getDate() + "</span>" +
+							( showLunar ? "<span>" + this._convertToLunar( printDate ) + "</span>" : "" ) : "<a class='ui-state-default" +
 							( printDate.getTime() === today.getTime() ? " ui-state-highlight" : "" ) +
 							( printDate.getTime() === currentDate.getTime() ? " ui-state-active" : "" ) + // highlight selected day
-							( otherMonth ? " ui-priority-secondary" : "" ) + "' href='#'><span>" + // distinguish dates from other months
+							( otherMonth ? " ui-priority-secondary" : "" ) +
+							( showLunar ? " ui-datepicker-lunar" : "" ) + "' href='#'><span>" + // distinguish dates from other months
 							printDate.getDate() + "</span>" +
-							( showLunar ? "<span class='ui-datepicker-lunar'>" + this._convertToLunar(printDate) + "</span>" : "") + "</a>" ) ) + "</td>"; // display selectable date
+							( showLunar ? "<span>" + this._convertToLunar( printDate ) + "</span>" : "" ) + "</a>" ) ) + "</td>"; // display selectable date
 						printDate.setDate( printDate.getDate() + 1 );
 						printDate = this._daylightSavingAdjust( printDate );
 					}
@@ -2032,12 +2033,12 @@ $.extend( Datepicker.prototype, {
 	},
 
 	/* Convert date to lunar */
-	_convertToLunar: function(dt) {
-		var MinDay = new Date("1900-1-30");
-		var MaxDay = new Date("2049-12-31");
+	_convertToLunar: function( dt ) {
+		var MinDay = new Date( "1900-1-30" );
+		var MaxDay = new Date( "2049-12-31" );
 		var nStr1 = "日一二三四五六七八九十";
 		var nStr2 = "初十廿卅";
-		var monthArr = ["正月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "腊月"];
+		var monthArr = [ "正月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "腊月" ];
 		var ftv1 = {
 			"1-1": "春节",
 			"1-15": "元宵节",
@@ -2083,61 +2084,62 @@ $.extend( Datepicker.prototype, {
 			355,355,384,354,384,354,354,384,354,355
 		];
 
-		if (dt < MinDay || dt > MaxDay) {
+		if ( dt < MinDay || dt > MaxDay ) {
 			return null;
 		}
 
-		var offset = (dt - MinDay)/1000/60/60/24; //计算与1900年的天数差
+		var offset = ( dt - MinDay ) / 1000 / 60 / 60 / 24; //计算与1900年的天数差
 		var _index = 0;
-		for (var i = 0; i < lunarDays.length; i++) {
-			if (offset - lunarDays[i] < 1) {
+		for ( var i = 0; i < lunarDays.length; i++ ) {
+			if ( offset - lunarDays[ i ] < 1 ) {
 				_index = i;
 				break;
 			} else {
-				offset -= lunarDays[i];
+				offset -= lunarDays[ i ];
 			}
 		}
 
-		var _cYear = lunarArr[_index];
+		var _cYear = lunarArr[ _index ];
 		var _cMonth = 0;
 		var _cDay = 0;
 		var leap = _cYear & 0xf; //计算该年闰哪个月
 		var temp = 0;
-		var monthDays = this._getMonthDays(_cYear);
+		var monthDays = this._getMonthDays( _cYear );
 		var _cIsLeapMonth = false; //判断当月是否为闰月
-		for (var j = 1; j <= 12; j++) {
+		for ( var j = 1; j <= 12; j++ ) {
+
 			//闰月
-			if ((leap > 0) && (j === leap + 1)) {
+			if ( ( leap > 0 ) && ( j === leap + 1 ) ) {
 				_cIsLeapMonth = true;
 				j--;
-				temp = monthDays[12];
+				temp = monthDays[ 12 ];
 			} else {
 				_cIsLeapMonth = false;
-				temp = monthDays[j-1];
+				temp = monthDays[ j - 1 ];
 			}
 			offset -= temp;
-			if (offset <= 0) {
+			if ( offset <= 0 ) {
 				_cMonth = j;
-				_cDay = Math.floor(offset + temp);
+				_cDay = Math.floor( offset + temp );
 				break;
 			}
 		}
 
 		var lunarMD = "";
-		switch(_cDay) {
-			case 1: lunarMD = monthArr[_cMonth - 1]; break;
+		switch ( _cDay ) {
+			case 1: lunarMD = monthArr[ _cMonth - 1 ]; break;
 			case 10: lunarMD = "初十"; break;
 			case 20: lunarMD = "廿"; break;
 			case 30: lunarMD = "卅"; break;
-			default: lunarMD = nStr2.charAt(Math.floor(_cDay / 10)) + nStr1.charAt(_cDay % 10);
+			default: lunarMD = nStr2.charAt( Math.floor( _cDay / 10 ) ) + nStr1.charAt( _cDay % 10 );
 		}
 
 		//农历节日
-		if (!_cIsLeapMonth) {
-			if (ftv1[_cMonth + "-" + _cDay]) {
-				lunarMD = ftv1[_cMonth + "-" + _cDay];
+		if ( !_cIsLeapMonth ) {
+			if ( ftv1[ _cMonth + "-" + _cDay ] ) {
+				lunarMD = ftv1[ _cMonth + "-" + _cDay ];
 			}
-			if (_cMonth === 12 && _cDay === monthDays[11]) {
+			if ( _cMonth === 12 && _cDay === monthDays[ 11 ] ) {
 				lunarMD = "除夕";
 			}
 		}
@@ -2145,28 +2147,29 @@ $.extend( Datepicker.prototype, {
 		return lunarMD;
 	},
 
-    /**计算某农历年每个月的天数, 闰月天数放在数组最后一位 */
-	_getMonthDays: function(year) {
+  /**计算某农历年每个月的天数, 闰月天数放在数组最后一位 */
+	_getMonthDays: function( year ) {
 		var arr = [];
 		var info = year & 0x0ffff;
 		var i = 0x8000;
-		for (var m = 0; m < 12; m++) {
+		for ( var m = 0; m < 12; m++ ) {
 			var f = info & i;
-			if (f !== 0) {
-				arr.push(30);
+			if ( f !== 0 ) {
+				arr.push( 30 );
 			} else {
-				arr.push(29);
+				arr.push( 29 );
 			}
 			i = i >> 1;
 		}
 
 		//判断最后四位，若为0则没有闰月
-		if ((year & 0xf) !== 0) {
+		if ( ( year & 0xf ) !== 0 ) {
+
 			//判断前四位，闰月天数
-			if ((year & 0x10000) !== 0) {
-				arr.push(30);
+			if ( ( year & 0x10000 ) !== 0 ) {
+				arr.push( 30 );
 			} else {
-				arr.push(29);
+				arr.push( 29 );
 			}
 		}
 		return arr;
