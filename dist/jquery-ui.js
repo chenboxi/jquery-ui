@@ -9865,7 +9865,7 @@ $.extend( Datepicker.prototype, {
 		for ( var j = 1; j <= 12; j++ ) {
 
 			//闰月
-			if ( ( leap > 0 ) && ( j === leap + 1 ) ) {
+			if ( ( leap > 0 ) && ( j === leap + 1 ) && !_cIsLeapMonth ) {
 				_cIsLeapMonth = true;
 				j--;
 				temp = monthDays[ 12 ];
