@@ -9790,7 +9790,7 @@ $.extend( Datepicker.prototype, {
 
 	/* Convert date to lunar */
 	_convertToLunar: function( dt ) {
-		var MinDay = new Date( "1900-1-30" );
+		var MinDay = new Date( "1900-01-30" );
 		var MaxDay = new Date( "2049-12-31" );
 		var nStr1 = "日一二三四五六七八九十";
 		var nStr2 = "初十廿卅";
