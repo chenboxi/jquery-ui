@@ -1809,6 +1809,7 @@ $.extend( Datepicker.prototype, {
 							// or defaultDate is current printedDate and defaultDate is selectedDate
 							" " + this._dayOverClass : "" ) + // highlight selected day
 							( unselectable ? " " + this._unselectableClass + " ui-state-disabled" : "" ) +  // highlight unselectable days
+							( showLunar ? " ui-datepicker-lunar" : "" ) +
 							( otherMonth && !showOtherMonths ? "" : " " + daySettings[ 1 ] + // highlight custom dates
 							( printDate.getTime() === currentDate.getTime() ? " " + this._currentClass : "" ) + // highlight selected day
 							( printDate.getTime() === today.getTime() ? " ui-datepicker-today" : "" ) ) + "'" + // highlight today (if different)
@@ -1819,8 +1820,7 @@ $.extend( Datepicker.prototype, {
 							( showLunar ? "<span>" + this._convertToLunar( printDate ) + "</span>" : "" ) : "<a class='ui-state-default" +
 							( printDate.getTime() === today.getTime() ? " ui-state-highlight" : "" ) +
 							( printDate.getTime() === currentDate.getTime() ? " ui-state-active" : "" ) + // highlight selected day
-							( otherMonth ? " ui-priority-secondary" : "" ) +
-							( showLunar ? " ui-datepicker-lunar" : "" ) + "' href='#'><span>" + // distinguish dates from other months
+							( otherMonth ? " ui-priority-secondary" : "" ) + "' href='#'><span>" + // distinguish dates from other months
 							printDate.getDate() + "</span>" +
 							( showLunar ? "<span>" + this._convertToLunar( printDate ) + "</span>" : "" ) + "</a>" ) ) + "</td>"; // display selectable date
 						printDate.setDate( printDate.getDate() + 1 );

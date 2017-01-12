@@ -1,4 +1,4 @@
-/*! jQuery UI - v1.12.2-pre - 2017-01-11
+/*! jQuery UI - v1.12.2-pre - 2017-01-12
 * http://jqueryui.com
 * Includes: core.css, accordion.css, autocomplete.css, button.css, checkboxradio.css, controlgroup.css, datepicker.css, dialog.css, draggable.css, menu.css, progressbar.css, resizable.css, selectable.css, selectmenu.css, sortable.css, slider.css, spinner.css, tabs.css, tooltip.css, theme.css
 * Copyright jQuery Foundation and other contributors; Licensed  */
@@ -358,15 +358,21 @@ button.ui-button::-moz-focus-inner {
 .ui-datepicker .ui-datepicker-buttonpane button.ui-datepicker-current {
 	float: left;
 }
-.ui-datepicker-unselectable.ui-state-disabled span:nth-child(2){
+
+.ui-datepicker td a span {
+	padding: 0;
+}
+.ui-datepicker td.ui-datepicker-lunar a {
+	padding: 0;
+}
+.ui-datepicker td.ui-datepicker-lunar a span {
+	padding: .2em;
+}
+.ui-datepicker td.ui-datepicker-lunar span:nth-child(2) {
 	font-size: 0.6em;
 	padding: 0;
 }
 
-.ui-state-default.ui-datepicker-lunar span:nth-child(2) {
-	font-size: 0.6em;
-	padding: 0;
-}
 /* with multiple calendars */
 .ui-datepicker.ui-datepicker-multi {
 	width: auto;

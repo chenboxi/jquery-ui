@@ -104,15 +104,21 @@
 .ui-datepicker .ui-datepicker-buttonpane button.ui-datepicker-current {
 	float: left;
 }
-.ui-datepicker-unselectable.ui-state-disabled span:nth-child(2){
+
+.ui-datepicker td a span {
+	padding: 0;
+}
+.ui-datepicker td.ui-datepicker-lunar a {
+	padding: 0;
+}
+.ui-datepicker td.ui-datepicker-lunar a span {
+	padding: .2em;
+}
+.ui-datepicker td.ui-datepicker-lunar span:nth-child(2) {
 	font-size: 0.6em;
 	padding: 0;
 }
 
-.ui-state-default.ui-datepicker-lunar span:nth-child(2) {
-	font-size: 0.6em;
-	padding: 0;
-}
 /* with multiple calendars */
 .ui-datepicker.ui-datepicker-multi {
 	width: auto;

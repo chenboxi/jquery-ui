@@ -147,7 +147,7 @@ grunt.initConfig({
 				}
 			},
 			src: cssFiles,
-			dest: "dist/jquery-ui.css"
+			dest: "themes/base/jquery-ui.css"
 		}
 	},
 	requirejs: {
