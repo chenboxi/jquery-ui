@@ -2034,8 +2034,8 @@ $.extend( Datepicker.prototype, {
 
 	/* Convert date to lunar */
 	_convertToLunar: function( dt ) {
-		var MinDay = new Date( "1900-01-30" );
-		var MaxDay = new Date( "2049-12-31" );
+		var MinDay = new Date( 1900, 0, 30 );
+		var MaxDay = new Date( 2049, 11, 31 );
 		var nStr1 = "日一二三四五六七八九十";
 		var nStr2 = "初十廿卅";
 		var monthArr = [ "正月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "腊月" ];
